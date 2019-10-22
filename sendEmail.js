@@ -1,17 +1,18 @@
 /*
 Steps to call this API
-`node sendEmailSendGrid.js prashant.sudeep@medimojo.in sipumailinglist.csv`
+`node sendEmailSendGrid.js prashant.sudeep@medimojo.in mailinglist.csv`
 Arguement 1 is the from email ID and 2 is the file name in the same directory as code with name and email IDs to people whom mailer has to be  sent.
 */
 
 const mailgun = require('mailgun-js')({
-  apiKey: 'APIKEY',
-  domain: 'DOMAIN_NAME',
+  apiKey: process.env.APIKEY,
+  domain: process.env.DOMAIN_NAME,
 });
 
 const _ = require('lodash');
 const moment = require('moment');
 const csv = require('csvtojson');
+require('dotenv').config();
 
 const params = process.argv;
 const fromEmail = params[2];
@@ -25,7 +26,7 @@ console.log('csvFile', csvFile);
 
 sendEmailMailgun = (fromEmail, emailId, emailBody, subject) => new Promise((resolve, reject) => {
   const data = {
-    from: fromEmail,
+    from: process.env.FROM_EMAIL_ID,
     to: emailId,
     subject,
     html: emailBody,
