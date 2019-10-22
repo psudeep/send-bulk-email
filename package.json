@@ -1,0 +1,16 @@
+{
+  "name": "bulk_email",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Code to Send bulk email",
+  "keywords": [],
+  "dependencies": {
+    "csvtojson": "^2.0.10",
+    "json2csv": "^3.11.5",
+    "lodash": "^4.17.10",
+    "mailgun-js": "^0.22.0",
+    "moment": "^2.18.1"
+  },
+  "author": "prashant(@sipulal - Twitter)",
+  "license": "GNU General Public License (GPL)"
+}
