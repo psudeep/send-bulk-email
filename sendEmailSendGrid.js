@@ -5,6 +5,7 @@ Arguement 1 is the from email ID and 2 is the file name in the same directory as
 */
 
 const sgMail = require('@sendgrid/mail');
+require('dotenv').config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
