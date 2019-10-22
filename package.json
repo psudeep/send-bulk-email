@@ -9,7 +9,8 @@
     "json2csv": "^3.11.5",
     "lodash": "^4.17.10",
     "mailgun-js": "^0.22.0",
-    "moment": "^2.18.1"
+    "moment": "^2.18.1",
+    "@sendgrid/mail": "^6.2.1",
   },
   "author": "prashant(@sipulal - Twitter)",
   "license": "GNU General Public License (GPL)"
