@@ -4,6 +4,8 @@ Steps to call this API
 Arguement 1 is the from email ID and 2 is the file name in the same directory as code with name and email IDs to people whom mailer has to be  sent.
 */
 
+require('dotenv').config();
+
 const mailgun = require('mailgun-js')({
   apiKey: process.env.APIKEY,
   domain: process.env.DOMAIN_NAME,
@@ -12,7 +14,6 @@ const mailgun = require('mailgun-js')({
 const _ = require('lodash');
 const moment = require('moment');
 const csv = require('csvtojson');
-require('dotenv').config();
 
 const params = process.argv;
 const fromEmail = params[2];
