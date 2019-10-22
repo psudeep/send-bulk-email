@@ -1,4 +1,4 @@
-# Bulk Email Using MailGun #
+# Bulk Email Using Node.js (Mailgun and Sendgrid) #
 
 This README would normally document whatever steps are necessary to get your code.
 
