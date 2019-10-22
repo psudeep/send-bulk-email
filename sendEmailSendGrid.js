@@ -19,14 +19,14 @@ const csvFile = params[3];
 
 const currentPath = process.cwd();
 
-console.log('fromEmail', fromEmail);
-console.log('csvFile', csvFile);
+// console.log('fromEmail', fromEmail);
+// console.log('csvFile', csvFile);
 
 const sendEmailSg = (fromEmail, emailId, emailBody, subject) => new Promise((resolve, reject) => {
   //sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   const msg = {
     to: emailId,
-    from: fromEmail,
+    from: process.env.FROM_EMAIL_ID,
     subject,
     //text: 'and easy to do anywhere, even with Node.js',
     html: emailBody,
