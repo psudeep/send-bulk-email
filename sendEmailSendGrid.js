@@ -1,6 +1,6 @@
 /*
 Steps to call this API
-`node sendDiwaliEmail.js prashant.sudeep@medimojo.in sipumailinglist.csv`
+`node sendEmailSendGrid.js prashant.sudeep@medimojo.in sipumailinglist.csv`
 Arguement 1 is the from email ID and 2 is the file name in the same directory as code with name and email IDs to people whom mailer has to be  sent.
 */
 
