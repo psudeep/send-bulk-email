@@ -1,25 +1,74 @@
-# Bulk Email Using Node.js (Mailgun and Sendgrid) #
+# Bulk Email Sender Using Node.js and SendGrid
 
-This README would normally document whatever steps are necessary to get your code.
+This project allows you to send bulk emails using Node.js and SendGrid. It includes features like batching, rate limiting, and customizable email templates.
 
-### Steps for running & customizing this code ###
+## Setup
 
-* Clone this code/repo: `git clone git@github.com:psudeep/send-bulk-email.git`
-* Install the packages: `npm install`
-* Add your Mailgun API Key and domain name in the `.env` file and then it will use it as config
-* Update your the mailling list in the format shared as mailinglist.csv
-* Your can change your email Subject: `SUBJECT` variable in the code
-* You should create your html template from somewhere and change in the HTML_TEMPLATE variable
+1. Clone this repository:
+   ```
+   git clone https://github.com/psudeep/send-bulk-email.git bulk-email-sender
+   cd bulk-email-sender
+   ```
 
+2. Install the required packages:
+   ```
+   npm install
+   ```
 
-### Steps for Sending email
+3. Create a `.env` file in the root directory with your SendGrid API key and sender email:
+   ```
+   SENDGRID_API_KEY=your_sendgrid_api_key_here
+   FROM_EMAIL_ID=your_sender_email@example.com
+   ```
 
-* Once all the changes are made.
-* Mailing list, subject and email template is updated, follow the below commands
-* `node sendEmail.js prashant@medimojo.in mailinglist.csv`
-* Make sure your maling list and code are in the same directory.
+4. Update the `config.js` file to customize settings such as batch size, email subject, and CSV required fields.
 
-### Support (Help/Customization) ###
+5. Prepare your CSV file with at least 'name' and 'email' columns. Place it in the project directory.
 
-* If you want any changes and customization, please write to me at `prashant.sudeep89@gmail.com`
-* If you want SENDGRID code for this instead of mailgun, drop an email to me.
+6. Create an HTML email template file (default: `email_template.html`) in the project directory.
+
+## Usage
+
+To send bulk emails:
+
+```
+node sendEmailSendGrid.js your_csv_file.csv
+```
+
+Replace `your_csv_file.csv` with the path to your CSV file containing recipient information.
+
+## Customization
+
+### Email Template
+
+Create your HTML email template and update the `TEMPLATE_PATH` in `config.js`. Use `{{NAME}}` in the template to personalize emails with the recipient's name.
+
+### Configuration
+
+Modify `config.js` to adjust various settings:
+
+- `BATCH_SIZE`: Number of emails to send in each batch
+- `SUBJECT`: Email subject line
+- `CSV_REQUIRED_FIELDS`: Required fields in the CSV file
+- `RATE_LIMIT`: Adjust rate limiting settings
+- `RETRY`: Configure retry attempts for failed emails
+
+### Logging
+
+Adjust the `LOG_LEVEL` in `config.js` to control the verbosity of logs.
+
+## Features
+
+- Batch sending of emails
+- Rate limiting to comply with SendGrid's guidelines
+- Customizable email templates
+- CSV parsing with required field validation
+- Detailed logging of the email sending process
+
+## Support and Customization
+
+For support, bug reports, or custom feature requests, please open an issue on the GitHub repository or contact the maintainer at prashant.sudeep89@gmail.com.
+
+## License
+
+[MIT License](LICENSE)
