@@ -2,7 +2,7 @@ const sgMail = require('@sendgrid/mail');
 const csv = require('csvtojson');
 const fs = require('fs').promises;
 const path = require('path');
-const config = require('./config');
+const config = require('./src/config/config');
 
 // Set SendGrid API key
 sgMail.setApiKey(config.SENDGRID_API_KEY);

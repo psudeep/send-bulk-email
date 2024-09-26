@@ -3,7 +3,21 @@
   "private": true,
   "version": "0.0.1",
   "description": "Code to Send bulk email",
-  "keywords": [],
+  "keywords": [
+    "email",
+    "bulk",
+    "sendgrid",
+    "mailgun"
+  ],
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "send:sendgrid": "cross-env EMAIL_SERVICE=sendgrid node src/index.js",
+    "send:mailgun": "cross-env EMAIL_SERVICE=mailgun node src/index.js",
+    "lint": "eslint .",
+    "test": "jest",
+    "dev": "nodemon src/index.js"
+  },
   "dependencies": {
     "@sendgrid/mail": "^6.2.1",
     "csvtojson": "^2.0.10",
@@ -11,7 +25,14 @@
     "json2csv": "^3.11.5",
     "lodash": "^4.17.10",
     "mailgun-js": "^0.22.0",
-    "moment": "^2.18.1"
+    "moment": "^2.18.1",
+    "winston": "^3.14.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "eslint": "^7.32.0",
+    "jest": "^27.5.1",
+    "nodemon": "^2.0.22"
   },
   "author": "prashantsudeep",
   "license": "GNU General Public License (GPL)"

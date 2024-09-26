@@ -10,7 +10,7 @@ const config = {
   // Email sending configuration
   BATCH_SIZE: 100, // Number of emails to send in each batch
   SUBJECT: 'Your email subject here',
-  TEMPLATE_PATH: './email_template.html', // Path to your email template
+  TEMPLATE_PATH: '../data/email_template.html', // Path to your email template
 
   // CSV file configuration
   CSV_REQUIRED_FIELDS: ['name', 'email'], // Fields that must be present in the CSV

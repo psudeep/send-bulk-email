@@ -32,7 +32,8 @@ This project allows you to send bulk emails using Node.js and SendGrid. It inclu
 To send bulk emails:
 
 ```
-node sendEmailSendGrid.js your_csv_file.csv
+npm run send:sendgrid -- ./data/mailinglist.csv
+npm run send:mailgun -- ./data/mailinglist.csv
 ```
 
 Replace `your_csv_file.csv` with the path to your CSV file containing recipient information.
