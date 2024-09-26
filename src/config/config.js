@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 const config = {
+  emailService: process.env.EMAIL_SERVICE || 'sendgrid', // Can be 'sendgrid', 'mailgun', or 'awsses'
   // SendGrid configuration
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
   FROM_EMAIL: process.env.FROM_EMAIL_ID,
