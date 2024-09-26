@@ -22,7 +22,7 @@
     "@sendgrid/mail": "^6.2.1",
     "csvtojson": "^2.0.10",
     "dotenv": "^8.2.0",
-    "json2csv": "^3.11.5",
+    "json2csv": "^6.0.0-alpha.2",
     "lodash": "^4.17.10",
     "mailgun-js": "^0.22.0",
     "moment": "^2.18.1",
