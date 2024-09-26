@@ -4,36 +4,33 @@ const logger = require('../utils/logger');
 class SendgridService {
   constructor() {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  }
-
-  async sendEmail(to, subject, html) {
-    const msg = {
-      to,
-      from: process.env.FROM_EMAIL_ID,
-      subject,
-      html,
-    };
-
-    try {
-      await sgMail.send(msg);
-      logger.info(`Email sent successfully to ${to}`);
-    } catch (error) {
-      logger.error(`Error sending email to ${to}:`, error);
-      throw error;
-    }
+    this.batchSize = 1000; // SendGrid allows up to 1000 recipients per API call
   }
 
   async sendBulkEmails(recipients, config) {
     logger.info(`Starting to send ${recipients.length} emails using SendGrid`);
 
-    for (const recipient of recipients) {
+    for (let i = 0; i < recipients.length; i += this.batchSize) {
+      const batch = recipients.slice(i, i + this.batchSize);
+      logger.info(`Preparing batch of ${batch.length} emails`);
+
+      const messages = batch.map(recipient => ({
+        to: recipient.email,
+        from: process.env.FROM_EMAIL_ID,
+        subject: `Hello ${recipient.name}`,
+        html: `<p>Hello ${recipient.name},</p><p>This is a test email.</p>`,
+      }));
+
       try {
-        const subject = `Hello ${recipient.name}`;
-        const html = `<p>Hello ${recipient.name},</p><p>This is a test email.</p>`;
-        await this.sendEmail(recipient.email, subject, html);
+        await sgMail.sendMultiple(messages);
+        logger.info(`Successfully sent batch of ${batch.length} emails`);
       } catch (error) {
-        logger.error(`Failed to send email to ${recipient.email}:`, error);
+        logger.error(`Error sending batch of emails:`, error);
+        // Here you might want to implement some error handling or retry logic
       }
+
+      // Optional: Add a delay between batches to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
     logger.info('Finished sending bulk emails with SendGrid');
