@@ -1,55 +1,95 @@
 const mailgun = require('mailgun-js');
+const BaseEmailService = require('./baseEmailService');
 const logger = require('../utils/logger');
+const metrics = require('../utils/metrics');
+const retry = require('../utils/retry');
 
-class MailgunService {
-  constructor() {
-    this.mg = mailgun({
-      apiKey: process.env.MAILGUN_API_KEY,
-      domain: process.env.MAILGUN_DOMAIN,
-    });
-    this.batchSize = 1000; // Mailgun recommends not exceeding 1000 recipients per API call
+class MailgunService extends BaseEmailService {
+  constructor(config) {
+    super(config);
+    this.config = config;
+    this.mailgun = null;
+  }
+
+  validateConfig(config) {
+    super.validateConfig(config);
+    if (!config.domain) {
+      throw new Error('Domain is required for Mailgun');
+    }
+  }
+
+  initialize() {
+    if (!this.mailgun) {
+      this.validateConfig(this.config);
+      this.mailgun = mailgun({
+        apiKey: this.config.apiKey,
+        domain: this.config.domain
+      });
+    }
+    return this.mailgun;
+  }
+
+  async sendEmail(emailData) {
+    const mailgun = this.initialize();
+    const msg = {
+      to: emailData.email,
+      from: this.config.from,
+      subject: emailData.subject || 'Hello',
+      text: emailData.text,
+      html: emailData.html
+    };
+
+    try {
+      const response = await retry(
+        () => mailgun.messages().send(msg),
+        {
+          maxAttempts: this.config.retryAttempts,
+          initialDelay: this.config.retryDelay,
+          shouldRetry: (error) => {
+            return error.code === 429 || (error.code >= 500 && error.code < 600);
+          }
+        }
+      );
+
+      metrics.recordEmail(true);
+      logger.info(`Email sent successfully to ${emailData.email}`);
+      return response;
+    } catch (error) {
+      metrics.recordEmail(false, error);
+      logger.error(`Failed to send email to ${emailData.email}:`, error);
+      throw error;
+    }
   }
 
   async sendBulkEmails(recipients, config) {
     logger.info(`Starting to send ${recipients.length} emails using Mailgun`);
+    metrics.reset();
 
-    for (let i = 0; i < recipients.length; i += this.batchSize) {
-      const batch = recipients.slice(i, i + this.batchSize);
+    for (let i = 0; i < recipients.length; i += this.config.batchSize) {
+      const batch = recipients.slice(i, i + this.config.batchSize);
       logger.info(`Preparing batch of ${batch.length} emails`);
-
-      const data = {
-        from: process.env.FROM_EMAIL_ID,
-        to: batch.map(r => r.email),
-        subject: 'Bulk Email Test',
-        html: 'Hello %recipient.name%, <p>This is a test email.</p>',
-        'recipient-variables': batch.reduce((acc, r) => {
-          acc[r.email] = { name: r.name };
-          return acc;
-        }, {})
-      };
+      
+      metrics.startBatch();
 
       try {
-        await new Promise((resolve, reject) => {
-          this.mg.messages().send(data, (error, body) => {
-            if (error) {
-              logger.error(`Error sending batch of emails:`, error);
-              reject(error);
-            } else {
-              logger.info(`Successfully sent batch of ${batch.length} emails`);
-              resolve(body);
-            }
-          });
-        });
+        const promises = batch.map(recipient => this.sendEmail(recipient));
+        await Promise.all(promises);
+        
+        metrics.endBatch(true);
+        logger.info(`Successfully sent batch of ${batch.length} emails`);
       } catch (error) {
-        // Here you might want to implement some error handling or retry logic
+        metrics.endBatch(false, error);
+        logger.error(`Error sending batch of emails:`, error);
       }
 
-      // Optional: Add a delay between batches to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Add delay between batches to avoid rate limiting
+      await this.delay(this.config.batchDelay);
     }
 
+    metrics.logMetrics();
     logger.info('Finished sending bulk emails with Mailgun');
   }
 }
 
-module.exports = new MailgunService();
+// Export the class instead of an instance
+module.exports = MailgunService;

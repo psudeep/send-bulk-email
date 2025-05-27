@@ -7,14 +7,18 @@ const retry = require('../utils/retry');
 class SendGridService extends BaseEmailService {
   constructor(config) {
     super(config);
+    this.validateConfig();
     sgMail.setApiKey(config.apiKey);
     this.batchSize = config.batchSize || 1000;
   }
 
-  validateConfig(config) {
-    super.validateConfig(config);
-    if (!config.templateId) {
-      throw new Error('Template ID is required for SendGrid');
+  validateConfig() {
+    super.validateConfig();
+    if (!this.config.apiKey) {
+      throw new Error('SendGrid API key is required');
+    }
+    if (!this.config.from) {
+      throw new Error('SendGrid from email address is required');
     }
   }
 
@@ -92,6 +96,26 @@ class SendGridService extends BaseEmailService {
     metrics.logMetrics();
     logger.info('Finished sending bulk emails with SendGrid');
   }
+
+  async sendBatch(batch, options = {}) {
+    const messages = batch.map(recipient => ({
+      to: recipient.email,
+      from: this.config.from,
+      templateId: options.templateId || this.config.templateId,
+      dynamicTemplateData: recipient.data || {}
+    }));
+
+    try {
+      await this.retry(
+        () => sgMail.send(messages),
+        this.config.retryAttempts || 3,
+        this.config.retryDelay || 1000
+      );
+    } catch (error) {
+      logger.error('SendGrid API error:', error);
+      throw error;
+    }
+  }
 }
 
-module.exports = new SendGridService(require('../config/sendgrid'));
+module.exports = SendGridService;
