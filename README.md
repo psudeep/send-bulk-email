@@ -196,4 +196,4 @@ This project is licensed under the GNU General Public License (GPL) - see the LI
 
 ## Support
 
-For support, email support@example.com or open an issue in the GitHub repository.
+For support, email prashant.sudeep89@gmail.com or open an issue in the GitHub repository.
