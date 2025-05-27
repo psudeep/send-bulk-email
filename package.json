@@ -18,16 +18,20 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "docs:serve": "swagger-ui-express"
   },
   "dependencies": {
     "@sendgrid/mail": "^6.2.1",
     "csvtojson": "^2.0.10",
     "dotenv": "^8.2.0",
+    "express": "^4.18.2",
     "json2csv": "^3.11.5",
     "lodash": "^4.17.10",
     "mailgun-js": "^0.22.0",
     "moment": "^2.18.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "validator": "^13.9.0",
     "winston": "^3.14.2"
   },
